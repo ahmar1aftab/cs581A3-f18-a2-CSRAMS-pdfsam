@@ -21,7 +21,10 @@ package org.pdfsam.support.params;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.sejda.conversion.AdapterUtils.splitAndTrim;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.pdfsam.i18n.DefaultI18nContext;
@@ -54,11 +57,37 @@ public final class ConversionUtils {
                 }
                 pageRangeSet.add(range);
             }
-            return pageRangeSet;
+            
+            
+            return mergeIntervals(new ArrayList<PageRange>(pageRangeSet));
+            //return pageRangeSet;
         }
         return Collections.emptySet();
     }
 
+    private static Set<PageRange> mergeIntervals(List<PageRange> intervals) {
+    	PageRange first = intervals.get(0);
+        int start = first.getStart();
+        int end = first.getEnd();
+        
+        List<PageRange> result = new ArrayList<PageRange>();
+        
+        for(int i = 1; i < intervals.size(); i++){
+        	PageRange current = intervals.get(i);
+            if(current.getStart() <= end){
+                end = Math.max(current.getEnd(), end);
+            }else{
+                result.add(new PageRange(start, end));
+                start = current.getStart();
+                end = current.getEnd();
+            }
+            
+        }
+        
+        result.add(new PageRange(start, end));
+		return new HashSet<PageRange>(result);
+	}
+    
     private static PageRange toPageRange(String value) throws ConversionException {
         String[] limits = splitAndTrim(value, "-");
         if (limits.length > 2) {
