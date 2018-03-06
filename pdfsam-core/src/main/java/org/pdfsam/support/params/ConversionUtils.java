@@ -58,13 +58,16 @@ public final class ConversionUtils {
                 pageRangeSet.add(range);
             }
             
-            
+            //Change Request#3
             return mergeIntervals(new ArrayList<PageRange>(pageRangeSet));
             //return pageRangeSet;
         }
         return Collections.emptySet();
     }
-
+/**
+ * @author Ahmar Aftab
+ * Change Request# 3
+ */
     private static Set<PageRange> mergeIntervals(List<PageRange> intervals) {
     	PageRange first = intervals.get(0);
         int start = first.getStart();
