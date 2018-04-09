@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.pdfsam.ui.selection.multiple.SelectionChangedEvent;
 
 import javafx.collections.ObservableList;
 
@@ -115,5 +116,21 @@ public enum MoveType {
      * @return a new SelectionAndFocus holding the new coordinates for focus and selection
      */
     public abstract <T> SelectionAndFocus move(Integer[] indicesToMove, ObservableList<T> items, int focused);
+
+	public boolean canMove(SelectionChangedEvent selectionChangedEvent) {
+	    if (selectionChangedEvent.isClearSelection()) {
+	        return false;
+	    }
+	    switch (this) {
+	    case BOTTOM:
+	        return selectionChangedEvent.isSingleSelection() && selectionChangedEvent.bottom < selectionChangedEvent.totalRows - 1;
+	    case DOWN:
+	        return selectionChangedEvent.bottom < selectionChangedEvent.totalRows - 1;
+	    case TOP:
+	        return selectionChangedEvent.isSingleSelection() && selectionChangedEvent.top > 0;
+	    default:
+	        return selectionChangedEvent.top > 0;
+	    }
+	}
 
 }

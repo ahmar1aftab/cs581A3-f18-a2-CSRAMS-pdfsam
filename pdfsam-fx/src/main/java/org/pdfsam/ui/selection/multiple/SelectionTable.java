@@ -212,10 +212,10 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             moveTopSelected.setAccelerator(new KeyCodeCombination(KeyCode.HOME, KeyCombination.ALT_DOWN));
 
             selectionChangedConsumer = selectionChangedConsumer.andThen(e -> {
-                moveTopSelected.setDisable(!e.canMove(MoveType.TOP));
-                moveUpSelected.setDisable(!e.canMove(MoveType.UP));
-                moveDownSelected.setDisable(!e.canMove(MoveType.DOWN));
-                moveBottomSelected.setDisable(!e.canMove(MoveType.BOTTOM));
+                moveTopSelected.setDisable(!MoveType.TOP.canMove(e));
+                moveUpSelected.setDisable(!MoveType.UP.canMove(e));
+                moveDownSelected.setDisable(!MoveType.DOWN.canMove(e));
+                moveBottomSelected.setDisable(!MoveType.BOTTOM.canMove(e));
             });
         }
         if (canDuplicate) {

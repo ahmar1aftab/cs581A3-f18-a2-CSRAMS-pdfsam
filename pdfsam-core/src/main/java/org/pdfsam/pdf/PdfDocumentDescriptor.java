@@ -45,28 +45,26 @@ import org.sejda.model.pdf.PdfVersion;
  */
 public class PdfDocumentDescriptor {
 
-    private ObservableAtomicReference<PdfDescriptorLoadingStatus> loadingStatus = new ObservableAtomicReference<>(
-            PdfDescriptorLoadingStatus.INITIAL);
-    private AtomicInteger references = new AtomicInteger(1);
-    private ObservableAtomicReference<Integer> pages = new ObservableAtomicReference<>(0);
-    private String password;
-    private File file;
-    private PdfVersion version;
-    private Map<String, String> metadata = new HashMap<>();
-    private SortedSet<Integer> validBookmarksLevels = Collections.emptySortedSet();
+	/**
+	 * Refactor God Class : Extract class
+	 * 
+	 */
+    private PdfDocumentDescriptorData data = new PdfDocumentDescriptorData(new ObservableAtomicReference<>(
+            PdfDescriptorLoadingStatus.INITIAL), new AtomicInteger(1), new ObservableAtomicReference<>(0),
+			new HashMap<>(), Collections.emptySortedSet());
 
-    private PdfDocumentDescriptor(File file, String password) {
+	private PdfDocumentDescriptor(File file, String password) {
         requireNotNull(file, "Input file is mandatory");
-        this.file = file;
-        this.password = password;
+        this.data.file = file;
+        this.data.password = password;
     }
 
     public String getFileName() {
-        return file.getName();
+        return data.file.getName();
     }
 
     public PdfFileSource toPdfFileSource() {
-        return PdfFileSource.newInstanceWithPassword(file, password);
+        return PdfFileSource.newInstanceWithPassword(data.file, data.password);
     }
 
     /**
@@ -74,28 +72,28 @@ public class PdfDocumentDescriptor {
      * @return the information dictionary value for the key or an empty string
      */
     public String getInformation(String key) {
-        return StringUtils.defaultString(metadata.get(key));
+        return StringUtils.defaultString(data.metadata.get(key));
     }
 
     public void setInformationDictionary(Map<String, String> info) {
-        metadata.clear();
-        metadata.putAll(info);
+        data.metadata.clear();
+        data.metadata.putAll(info);
     }
 
     public void putInformation(String key, String value) {
-        metadata.put(key, value);
+        data.metadata.put(key, value);
     }
 
     public void pages(int newValue) {
-        this.pages.set(newValue);
+        this.data.pages.set(newValue);
     }
 
     public ObservableAtomicReference<PdfDescriptorLoadingStatus> loadingStatus() {
-        return loadingStatus;
+        return data.loadingStatus;
     }
 
     public ObservableAtomicReference<Integer> pages() {
-        return pages;
+        return data.pages;
     }
 
     /**
@@ -104,46 +102,46 @@ public class PdfDocumentDescriptor {
      * @param destination
      */
     public void moveStatusTo(PdfDescriptorLoadingStatus destination) {
-        loadingStatus.set(loadingStatus.getValue().moveTo(destination));
+        data.loadingStatus.set(data.loadingStatus.getValue().moveTo(destination));
     }
 
     public String getPassword() {
-        return password;
+        return data.password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.data.password = password;
     }
 
     public boolean hasPassword() {
-        return isNotBlank(password);
+        return isNotBlank(data.password);
     }
 
     public String getVersionString() {
-        return ofNullable(version).map(PdfVersion::getVersionString).orElse("");
+        return ofNullable(data.version).map(PdfVersion::getVersionString).orElse("");
     }
 
     public PdfVersion getVersion() {
-        return version;
+        return data.version;
     }
 
     public void setVersion(PdfVersion version) {
-        this.version = version;
+        this.data.version = version;
     }
 
     public File getFile() {
-        return file;
+        return data.file;
     }
 
     public void setValidBookmarksLevels(Set<Integer> levels) {
-        this.validBookmarksLevels = new TreeSet<>();
+        this.data.validBookmarksLevels = new TreeSet<>();
         if (nonNull(levels)) {
-            levels.stream().forEach(this.validBookmarksLevels::add);
+            levels.stream().forEach(this.data.validBookmarksLevels::add);
         }
     }
 
     public SortedSet<Integer> getValidBookmarksLevels() {
-        return validBookmarksLevels;
+        return data.validBookmarksLevels;
     }
 
     /**
@@ -151,25 +149,25 @@ public class PdfDocumentDescriptor {
      *         on the descriptor that it should be ignored since not relevant anymore.
      */
     public boolean hasReferences() {
-        return references.get() > 0;
+        return data.references.get() > 0;
     }
 
     /**
      * @return true if the descriptor has become invalid because of the release
      */
     public boolean release() {
-        return this.references.decrementAndGet() <= 0;
+        return this.data.references.decrementAndGet() <= 0;
     }
 
     public void releaseAll() {
-        this.references.set(0);
+        this.data.references.set(0);
     }
 
     /**
      * Increment the number of reference
      */
     public PdfDocumentDescriptor retain() {
-        this.references.incrementAndGet();
+        this.data.references.incrementAndGet();
         return this;
     }
 

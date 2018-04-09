@@ -33,6 +33,36 @@ import org.sejda.conversion.exception.ConversionException;
 import org.sejda.model.pdf.page.PageRange;
 
 /**
+ * manual refactoring #2
+ * @author Anurag Kumar
+ */
+class MyMergeIntervals {
+	
+	public static Set<PageRange> mergeIntervals(List<PageRange> intervals) {
+    	PageRange first = intervals.get(0);
+        int start = first.getStart();
+        int end = first.getEnd();
+        
+        List<PageRange> result = new ArrayList<PageRange>();
+        
+        for(int i = 1; i < intervals.size(); i++){
+        	PageRange current = intervals.get(i);
+            if(current.getStart() <= end){
+                end = Math.max(current.getEnd(), end);
+            }else{
+                result.add(new PageRange(start, end));
+                start = current.getStart();
+                end = current.getEnd();
+            }
+            
+        }
+        
+        result.add(new PageRange(start, end));
+		return new HashSet<PageRange>(result);
+	}
+}
+
+/**
  * @author Andrea Vacondio
  *
  */
@@ -59,7 +89,7 @@ public final class ConversionUtils {
             }
             
             //Change Request#3
-            return mergeIntervals(new ArrayList<PageRange>(pageRangeSet));
+            return MyMergeIntervals.mergeIntervals(new ArrayList<PageRange>(pageRangeSet));
             //return pageRangeSet;
         }
         return Collections.emptySet();
@@ -68,6 +98,7 @@ public final class ConversionUtils {
  * @author Ahmar Aftab
  * Change Request# 3
  */
+    /**
     private static Set<PageRange> mergeIntervals(List<PageRange> intervals) {
     	PageRange first = intervals.get(0);
         int start = first.getStart();
@@ -90,6 +121,7 @@ public final class ConversionUtils {
         result.add(new PageRange(start, end));
 		return new HashSet<PageRange>(result);
 	}
+*/    
     
     private static PageRange toPageRange(String value) throws ConversionException {
         String[] limits = splitAndTrim(value, "-");

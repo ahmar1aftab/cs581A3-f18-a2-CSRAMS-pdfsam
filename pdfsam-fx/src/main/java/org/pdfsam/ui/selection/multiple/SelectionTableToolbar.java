@@ -189,7 +189,7 @@ class SelectionTableToolbar extends ToolBar implements ModuleOwned {
 
         @EventListener
         public void disableIfCannotMoveDown(final SelectionChangedEvent event) {
-            setDisable(!event.canMove(type));
+            setDisable(!type.canMove(event));
         }
     }
 

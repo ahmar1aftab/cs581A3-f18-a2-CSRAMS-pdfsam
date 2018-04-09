@@ -25,7 +25,6 @@ import static org.pdfsam.support.RequireUtils.requireState;
 import java.util.Collection;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.pdfsam.ui.selection.multiple.move.MoveType;
 
 /**
  * Event sent when the selection on the selection table changed
@@ -33,11 +32,11 @@ import org.pdfsam.ui.selection.multiple.move.MoveType;
  * @author Andrea Vacondio
  * 
  */
-final class SelectionChangedEvent {
+public final class SelectionChangedEvent {
 
-    private int top = Integer.MAX_VALUE;
-    private int bottom = -1;
-    private int totalRows = 0;
+    public int top = Integer.MAX_VALUE;
+    public int bottom = -1;
+    public int totalRows = 0;
 
     private SelectionChangedEvent(Collection<? extends Integer> selected) {
         requireNotNull(selected, "Input selection cannot be null");
@@ -73,22 +72,6 @@ final class SelectionChangedEvent {
     public int getSingleSelection() {
         requireState(isSingleSelection(), "Single selection expected");
         return top;
-    }
-
-    public boolean canMove(MoveType type) {
-        if (isClearSelection()) {
-            return false;
-        }
-        switch (type) {
-        case BOTTOM:
-            return isSingleSelection() && bottom < totalRows - 1;
-        case DOWN:
-            return bottom < totalRows - 1;
-        case TOP:
-            return isSingleSelection() && top > 0;
-        default:
-            return top > 0;
-        }
     }
 
     public int getTotalRows() {

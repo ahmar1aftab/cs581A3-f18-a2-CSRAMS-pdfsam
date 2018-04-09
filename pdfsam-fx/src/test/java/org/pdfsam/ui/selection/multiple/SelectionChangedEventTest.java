@@ -69,48 +69,48 @@ public class SelectionChangedEventTest {
     @Test
     public void clearCantMove() {
         SelectionChangedEvent victim = clearSelectionEvent();
-        stream(MoveType.values()).forEach(m -> assertFalse(victim.canMove(m)));
+        stream(MoveType.values()).forEach(m -> assertFalse(m.canMove(victim)));
     }
 
     @Test
     public void canMoveUp() {
-        assertTrue(select(asList(2, 3)).ofTotalRows(5).canMove(MoveType.UP));
+        assertTrue(MoveType.UP.canMove(select(asList(2, 3)).ofTotalRows(5)));
     }
 
     @Test
     public void cantMoveUp() {
-        assertFalse(select(asList(0, 3)).ofTotalRows(5).canMove(MoveType.UP));
+        assertFalse(MoveType.UP.canMove(select(asList(0, 3)).ofTotalRows(5)));
     }
 
     @Test
     public void cantMoveBottom() {
-        assertFalse(select(asList(0, 3)).ofTotalRows(5).canMove(MoveType.BOTTOM));
-        assertFalse(select(asList(4)).ofTotalRows(5).canMove(MoveType.BOTTOM));
+        assertFalse(MoveType.BOTTOM.canMove(select(asList(0, 3)).ofTotalRows(5)));
+        assertFalse(MoveType.BOTTOM.canMove(select(asList(4)).ofTotalRows(5)));
     }
 
     @Test
     public void canMoveBottom() {
-        assertTrue(select(asList(2)).ofTotalRows(5).canMove(MoveType.BOTTOM));
+        assertTrue(MoveType.BOTTOM.canMove(select(asList(2)).ofTotalRows(5)));
     }
 
     @Test
     public void cantMoveDown() {
-        assertFalse(select(asList(2, 4)).ofTotalRows(5).canMove(MoveType.DOWN));
+        assertFalse(MoveType.DOWN.canMove(select(asList(2, 4)).ofTotalRows(5)));
     }
 
     @Test
     public void canMoveDown() {
-        assertTrue(select(asList(0, 2)).ofTotalRows(5).canMove(MoveType.DOWN));
+        assertTrue(MoveType.DOWN.canMove(select(asList(0, 2)).ofTotalRows(5)));
     }
 
     @Test
     public void cantMoveTop() {
-        assertFalse(select(asList(0, 3)).ofTotalRows(5).canMove(MoveType.TOP));
-        assertFalse(select(asList(0)).ofTotalRows(5).canMove(MoveType.TOP));
+        assertFalse(MoveType.TOP.canMove(select(asList(0, 3)).ofTotalRows(5)));
+        assertFalse(MoveType.TOP.canMove(select(asList(0)).ofTotalRows(5)));
     }
 
     @Test
     public void canMoveTop() {
-        assertTrue(select(asList(3)).ofTotalRows(5).canMove(MoveType.TOP));
+        assertTrue(MoveType.TOP.canMove(select(asList(3)).ofTotalRows(5)));
     }
 }

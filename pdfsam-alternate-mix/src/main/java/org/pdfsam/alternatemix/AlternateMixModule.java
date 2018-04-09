@@ -92,22 +92,57 @@ public class AlternateMixModule extends BaseTaskExecutionModule {
         destinationFileField.saveStateTo(data);
         destinationPane.saveStateTo(data);
     }
-
+    
+    /**
+     * Manual Refactoring
+     * 
+     * @author Anurag Kumar
+     * 
+     */
+    //added new method
+    public void onLoadWorkspaceProxy(Map<String, String> data, int proxy){
+    	String a,b,c,d;
+    	a=b=c=d=null;
+    	if(proxy==1){
+    		a="0";
+    		b="first";
+    		c="1";
+    		d="First";
+    	}
+    	if(proxy==2){
+    		a="1";
+    		b="second";
+    		c="2";
+    		d="Second";
+    	}
+    	data.put("input."+a, data.get(b+"DocumentMixinput"));
+        data.put("input.password."+a, data.get(b+"DocumentMixinputinput.password"));
+        data.put("input.step."+a, data.get(b+"Step"));
+        data.put("input.reverse."+a, data.get("reverse"+d));
+        data.put("input.size", c);
+    }
+    
+    //*/
     @Override
     public void onLoadWorkspace(Map<String, String> data) {
         // backwards comp when alternate mix had 2 inputs
+    	int proxy;
         if (data.containsKey("firstDocumentMixinput")) {
-            data.put("input.0", data.get("firstDocumentMixinput"));
-            data.put("input.password.0", data.get("firstDocumentMixinputinput.password"));
-            data.put("input.step.0", data.get("firstStep"));
-            data.put("input.reverse.0", data.get("reverseFirst"));
-            data.put("input.size", "1");
+            proxy = 1;
+        	onLoadWorkspaceProxy(data, proxy);
+        	//data.put("input.0", data.get("firstDocumentMixinput"));
+            //data.put("input.password.0", data.get("firstDocumentMixinputinput.password"));
+            //data.put("input.step.0", data.get("firstStep"));
+            //data.put("input.reverse.0", data.get("reverseFirst"));
+            //data.put("input.size", "1");
             if (data.containsKey("secondDocumentMixinput")) {
-                data.put("input.1", data.get("secondDocumentMixinput"));
-                data.put("input.password.1", data.get("secondDocumentMixinput.password"));
-                data.put("input.step.1", data.get("secondStep"));
-                data.put("input.reverse.1", data.get("reverseSecond"));
-                data.put("input.size", "2");
+                proxy = 2;
+            	onLoadWorkspaceProxy(data, proxy);
+            	//data.put("input.1", data.get("secondDocumentMixinput"));
+            	//data.put("input.password.1", data.get("secondDocumentMixinput.password"));
+            	//data.put("input.step.1", data.get("secondStep"));
+            	//data.put("input.reverse.1", data.get("reverseSecond"));
+            	//data.put("input.size", "2");
             }
         }
         selectionPane.restoreStateFrom(data);
